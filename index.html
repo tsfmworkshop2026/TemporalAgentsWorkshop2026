@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Temporal Foundation Agents — NeurIPS 2026 Workshop</title>
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy: #1a2744;
+      --navy-light: #2b3d6b;
+      --accent: #4a6fa5;
+      --accent-soft: #e8eef7;
+      --text: #1e1e1e;
+      --muted: #5a5f6e;
+      --border: #d8dde8;
+      --bg: #fafaf8;
+      --white: #ffffff;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(250,250,248,0.95);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-inner {
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      height: 54px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-logo {
+      font-family: 'EB Garamond', serif;
+      font-size: 1.05rem;
+      font-weight: 500;
+      color: var(--navy);
+      text-decoration: none;
+      letter-spacing: 0.01em;
+    }
+    .nav-links {
+      display: flex;
+      gap: 1.8rem;
+      list-style: none;
+    }
+    .nav-links a {
+      text-decoration: none;
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--navy); }
+
+    /* ── HERO ── */
+    .hero {
+      background: var(--navy);
+      color: var(--white);
+      padding: 5rem 2rem 4rem;
+      text-align: center;
+    }
+    .hero-tag {
+      display: inline-block;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 2px;
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.3rem 0.8rem;
+      margin-bottom: 1.6rem;
+      color: rgba(255,255,255,0.75);
+    }
+    .hero h1 {
+      font-family: 'EB Garamond', serif;
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 500;
+      line-height: 1.2;
+      max-width: 780px;
+      margin: 0 auto 1rem;
+    }
+    .hero-sub {
+      font-size: 0.95rem;
+      color: rgba(255,255,255,0.65);
+      max-width: 520px;
+      margin: 0 auto 2.4rem;
+    }
+    .hero-meta {
+      display: flex;
+      justify-content: center;
+      gap: 2.5rem;
+      flex-wrap: wrap;
+    }
+    .hero-meta-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.2rem;
+    }
+    .hero-meta-label {
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.45);
+    }
+    .hero-meta-value {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: rgba(255,255,255,0.9);
+    }
+
+    /* ── SECTIONS ── */
+    section { padding: 4.5rem 2rem; }
+    section:nth-child(even) { background: var(--white); }
+
+    .container { max-width: 840px; margin: 0 auto; }
+    .container-wide { max-width: 1040px; margin: 0 auto; }
+
+    .section-label {
+      font-size: 0.68rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-weight: 600;
+      margin-bottom: 0.6rem;
+    }
+    h2 {
+      font-family: 'EB Garamond', serif;
+      font-size: 1.9rem;
+      font-weight: 500;
+      color: var(--navy);
+      margin-bottom: 1.5rem;
+      line-height: 1.25;
+    }
+    p { color: #3d3d3d; margin-bottom: 1rem; }
+    p:last-child { margin-bottom: 0; }
+
+    /* ── DIVIDER ── */
+    .rule {
+      width: 40px;
+      height: 2px;
+      background: var(--accent);
+      margin: 0.8rem 0 1.6rem;
+    }
+
+    /* ── TOPICS ── */
+    .topics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 1.2rem;
+      margin-top: 2rem;
+    }
+    .topic-card {
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1.4rem 1.6rem;
+      background: var(--bg);
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .topic-card:hover {
+      border-color: var(--accent);
+      box-shadow: 0 2px 12px rgba(74,111,165,0.1);
+    }
+    .topic-num {
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.4rem;
+    }
+    .topic-card h3 {
+      font-family: 'EB Garamond', serif;
+      font-size: 1.05rem;
+      font-weight: 500;
+      color: var(--navy);
+      margin-bottom: 0.5rem;
+      line-height: 1.3;
+    }
+    .topic-card p { font-size: 0.85rem; color: var(--muted); margin: 0; line-height: 1.6; }
+
+    /* ── SPEAKERS ── */
+    .speakers-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 1.2rem;
+      margin-top: 2rem;
+    }
+    .speaker-card {
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1.4rem 1.5rem;
+      background: var(--bg);
+    }
+    .speaker-name {
+      font-family: 'EB Garamond', serif;
+      font-size: 1.1rem;
+      font-weight: 500;
+      color: var(--navy);
+      margin-bottom: 0.2rem;
+    }
+    .speaker-role {
+      font-size: 0.78rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+    .speaker-role strong {
+      display: block;
+      font-weight: 500;
+      color: var(--accent);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 0.1rem;
+    }
+    .confirmed-badge {
+      display: inline-block;
+      margin-top: 0.6rem;
+      font-size: 0.65rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      background: #e8f5e9;
+      color: #2e7d32;
+      padding: 0.15rem 0.5rem;
+      border-radius: 2px;
+      font-weight: 600;
+    }
+
+    /* ── SCHEDULE ── */
+    .schedule-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 2rem;
+      font-size: 0.875rem;
+    }
+    .schedule-table thead tr {
+      border-bottom: 2px solid var(--navy);
+    }
+    .schedule-table th {
+      text-align: left;
+      font-weight: 600;
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 0.6rem 1rem 0.6rem 0;
+    }
+    .schedule-table td {
+      padding: 0.75rem 1rem 0.75rem 0;
+      vertical-align: top;
+      border-bottom: 1px solid var(--border);
+      color: #3d3d3d;
+    }
+    .schedule-table td:first-child {
+      white-space: nowrap;
+      font-variant-numeric: tabular-nums;
+      font-size: 0.8rem;
+      color: var(--muted);
+      font-weight: 500;
+      width: 120px;
+    }
+    .schedule-event {
+      font-weight: 500;
+      color: var(--navy);
+    }
+    .schedule-desc {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-top: 0.1rem;
+    }
+    .row-keynote td { background: var(--accent-soft); }
+    .row-break td { background: #f5f5f3; color: var(--muted); }
+
+    /* ── ORGANIZERS ── */
+    .organizers-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.2rem;
+      margin-top: 2rem;
+    }
+    .org-card {
+      padding: 1.2rem 1.4rem;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      background: var(--white);
+    }
+    .org-name {
+      font-family: 'EB Garamond', serif;
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--navy);
+    }
+    .org-affiliation {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-top: 0.15rem;
+      line-height: 1.4;
+    }
+    .org-bio {
+      font-size: 0.8rem;
+      color: #555;
+      margin-top: 0.7rem;
+      line-height: 1.6;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--navy);
+      color: rgba(255,255,255,0.5);
+      text-align: center;
+      padding: 2.5rem 2rem;
+      font-size: 0.8rem;
+    }
+    footer a { color: rgba(255,255,255,0.65); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 640px) {
+      .nav-links { display: none; }
+      .topics-grid { grid-template-columns: 1fr; }
+      .speakers-grid { grid-template-columns: 1fr 1fr; }
+      .organizers-grid { grid-template-columns: 1fr; }
+      .schedule-table td:first-child { width: 90px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a class="nav-logo" href="#">TFA Workshop</a>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#topics">Topics</a></li>
+      <li><a href="#speakers">Speakers</a></li>
+      <li><a href="#schedule">Schedule</a></li>
+      <li><a href="#organizers">Organizers</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-tag">NeurIPS 2026 Workshop Proposal</div>
+  <h1>Temporal Foundation Agents:<br/>Building Agentic Time Series Solutions for the Real World</h1>
+  <p class="hero-sub">A full-day workshop bridging machine learning, foundation modeling, scientific computing, and systems engineering.</p>
+  <div class="hero-meta">
+    <div class="hero-meta-item">
+      <span class="hero-meta-label">Venue</span>
+      <span class="hero-meta-value">NeurIPS 2026</span>
+    </div>
+    <div class="hero-meta-item">
+      <span class="hero-meta-label">Format</span>
+      <span class="hero-meta-value">Full Day</span>
+    </div>
+    <div class="hero-meta-item">
+      <span class="hero-meta-label">Invited Speakers</span>
+      <span class="hero-meta-value">6</span>
+    </div>
+    <div class="hero-meta-item">
+      <span class="hero-meta-label">Expected Participants</span>
+      <span class="hero-meta-value">~500</span>
+    </div>
+    <div class="hero-meta-item">
+      <span class="hero-meta-label">Submissions via</span>
+      <span class="hero-meta-value">OpenReview</span>
+    </div>
+  </div>
+</header>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="container">
+    <p class="section-label">Overview</p>
+    <h2>Why This Workshop</h2>
+    <div class="rule"></div>
+    <p>Time series data drives high-stakes decisions across finance, healthcare, climate and energy, manufacturing, scientific discovery, and IT operations. Yet the research landscape has become increasingly fragmented — forecasting vs. imputation vs. generation, univariate vs. multivariate and spatiotemporal, specialized inductive-bias models vs. foundation model approaches — producing incompatible assumptions, evaluation protocols, and tooling that slow progress toward deployable, reliable systems.</p>
+    <p>This workshop argues that the field is ready to move beyond isolated task papers toward <strong>time series foundation solutions</strong>: integrated systems that learn shared temporal representations, ingest heterogeneous context, support multiple query types, quantify uncertainty, satisfy physical or operational constraints, and remain robust under distribution drift.</p>
+    <p>A timely opportunity comes from the rapid emergence of <strong>agentic AI</strong>. Modern agents can plan, call tools, maintain memory, coordinate models, verify intermediate results, and operate in closed-loop workflows. For time series, this shifts the goal from answering a single forecasting query to building <em>agentic temporal intelligence systems</em> that decide what information to retrieve, which tools or simulators to invoke, how to adapt models to a domain, and when to defer, refine, or verify predictions.</p>
+    <p>This workshop therefore seeks to broaden the scope of time series foundation models from pretrained predictors to <strong>agent-ready temporal foundation systems</strong> — supporting flexible query interfaces, multimodal context grounding, memory over historical cases, tool use, physical and causal constraints, and trustworthy evaluation protocols.</p>
+  </div>
+</section>
+
+<!-- TOPICS -->
+<section id="topics">
+  <div class="container-wide">
+    <p class="section-label">Call for Papers</p>
+    <h2>Goals &amp; Topics</h2>
+    <div class="rule"></div>
+    <p style="max-width:680px; color:var(--muted);">We welcome work across modeling, theory, datasets, systems, and applications — especially submissions that bridge multiple layers of the solutions stack.</p>
+    <div class="topics-grid">
+      <div class="topic-card">
+        <p class="topic-num">Topic 01</p>
+        <h3>From Task-Specific Prediction to Temporal Query Answering</h3>
+        <p>How can a single foundation model support forecasting, imputation, anomaly detection, generation, counterfactual reasoning, and simulation through a unified query interface?</p>
+      </div>
+      <div class="topic-card">
+        <p class="topic-num">Topic 02</p>
+        <h3>Agentic Workflows for Time Series Analysis</h3>
+        <p>How should agents decompose temporal tasks into data preparation, model selection, uncertainty estimation, tool use, and result verification? How can multi-agent systems coordinate forecasting, diagnosis, planning, and monitoring?</p>
+      </div>
+      <div class="topic-card">
+        <p class="topic-num">Topic 03</p>
+        <h3>Context, Memory, and Multimodality</h3>
+        <p>How can temporal foundation models combine working memory, long-term memory, and retrieved domain knowledge from metadata, events, logs, text, images, and graphs while remaining robust to distribution shift?</p>
+      </div>
+      <div class="topic-card">
+        <p class="topic-num">Topic 04</p>
+        <h3>Physics-Informed and Constraint-Aware Models</h3>
+        <p>How can foundation models incorporate physical priors, differentiable simulators, state-space structure, and uncertainty propagation? How can agentic systems verify constraint satisfaction before acting?</p>
+      </div>
+      <div class="topic-card">
+        <p class="topic-num">Topic 05</p>
+        <h3>Generative and Probabilistic Temporal World Models</h3>
+        <p>How can diffusion, flow, autoregressive, and state-space generative models produce calibrated future trajectories, plausible counterfactuals, and simulation-ready samples for planning and decision making under uncertainty?</p>
+      </div>
+      <div class="topic-card">
+        <p class="topic-num">Topic 06</p>
+        <h3>Evaluation Beyond Benchmark Accuracy</h3>
+        <p>How should we design benchmarks to evaluate robustness under distribution shift, calibration, constraint satisfaction, tool-use correctness, reasoning quality, and human trustworthiness?</p>
+      </div>
+      <div class="topic-card">
+        <p class="topic-num">Topic 07</p>
+        <h3>Systems, Deployment, and Human-in-the-Loop Reliability</h3>
+        <p>How can we build efficient foundation models, continual adaptation pipelines, and agentic monitoring systems that remain auditable and controllable, operating under latency, privacy, and compute constraints?</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SPEAKERS -->
+<section id="speakers">
+  <div class="container-wide">
+    <p class="section-label">Invited Speakers</p>
+    <h2>Six Distinguished Speakers</h2>
+    <div class="rule"></div>
+    <div class="speakers-grid">
+
+      <div class="speaker-card">
+        <p class="speaker-name">Rajat Sen</p>
+        <p class="speaker-role">
+          <strong>Google Research</strong>
+          Research Scientist
+        </p>
+        <span class="confirmed-badge">Confirmed</span>
+      </div>
+
+      <div class="speaker-card">
+        <p class="speaker-name">Abdul Fatir Ansari</p>
+        <p class="speaker-role">
+          <strong>Amazon Web Services</strong>
+          Machine Learning Scientist
+        </p>
+        <span class="confirmed-badge">Confirmed</span>
+      </div>
+
+      <div class="speaker-card">
+        <p class="speaker-name">Bernie Wang</p>
+        <p class="speaker-role">
+          <strong>Amazon Web Services</strong>
+          Principal Scientist
+        </p>
+      </div>
+
+      <div class="speaker-card">
+        <p class="speaker-name">Noah Hollmann</p>
+        <p class="speaker-role">
+          <strong>Prior Labs</strong>
+          Chief Technology Officer
+        </p>
+        <span class="confirmed-badge">Confirmed</span>
+      </div>
+
+      <div class="speaker-card">
+        <p class="speaker-name">Rose Yu</p>
+        <p class="speaker-role">
+          <strong>UC San Diego</strong>
+          Associate Professor
+        </p>
+      </div>
+
+      <div class="speaker-card">
+        <p class="speaker-name">Christoph Bergmeir</p>
+        <p class="speaker-role">
+          <strong>University of Granada</strong>
+          Senior Fellow
+        </p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- SCHEDULE -->
+<section id="schedule">
+  <div class="container">
+    <p class="section-label">Program</p>
+    <h2>Workshop Schedule</h2>
+    <div class="rule"></div>
+    <p style="color:var(--muted); font-size:0.85rem;">Sessions will be recorded, shared online, and livestreamed with virtual poster options. Submissions managed via OpenReview with ~100 reviewers.</p>
+    <table class="schedule-table">
+      <thead>
+        <tr>
+          <th>Time</th>
+          <th>Event</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>08:00–08:15</td>
+          <td>
+            <div class="schedule-event">Opening Remarks</div>
+          </td>
+          <td>Workshop goals and a unified task–context map.</td>
+        </tr>
+        <tr class="row-keynote">
+          <td>08:15–09:00</td>
+          <td>
+            <div class="schedule-event">Keynote 1</div>
+            <div class="schedule-desc">Multivariate &amp; Multimodal Data</div>
+          </td>
+          <td>Curating and scaling multivariate, multimodal time series.</td>
+        </tr>
+        <tr>
+          <td>09:00–10:30</td>
+          <td>
+            <div class="schedule-event">Session 1</div>
+            <div class="schedule-desc">Data &amp; Task Realities</div>
+          </td>
+          <td>Irregular sampling, nonstationarity, and context effects.</td>
+        </tr>
+        <tr class="row-break">
+          <td>10:30–11:00</td>
+          <td>Coffee Break</td>
+          <td>Informal discussion.</td>
+        </tr>
+        <tr>
+          <td>11:00–12:00</td>
+          <td>
+            <div class="schedule-event">Session 2</div>
+            <div class="schedule-desc">Models &amp; Representations</div>
+          </td>
+          <td>Composable model architectures for multiple query types.</td>
+        </tr>
+        <tr class="row-break">
+          <td>12:00–14:00</td>
+          <td>Poster Session &amp; Lunch</td>
+          <td>Interactive posters using lightweight task/data cards.</td>
+        </tr>
+        <tr class="row-keynote">
+          <td>14:00–14:30</td>
+          <td>
+            <div class="schedule-event">Keynote 2</div>
+            <div class="schedule-desc">Generalization Across Tasks</div>
+          </td>
+          <td>Multimodal structure, causal signals, and cross-task transfer.</td>
+        </tr>
+        <tr>
+          <td>14:30–15:30</td>
+          <td>
+            <div class="schedule-event">Session 3</div>
+            <div class="schedule-desc">Evaluation &amp; Benchmarks</div>
+          </td>
+          <td>Cross-task evaluation and shared testing checklist.</td>
+        </tr>
+        <tr class="row-break">
+          <td>15:30–15:45</td>
+          <td>Break</td>
+          <td>Short intermission.</td>
+        </tr>
+        <tr>
+          <td>15:45–16:30</td>
+          <td>
+            <div class="schedule-event">Session 4</div>
+            <div class="schedule-desc">Agents &amp; Automation</div>
+          </td>
+          <td>Agentic workflows for model selection and verification.</td>
+        </tr>
+        <tr>
+          <td>16:30–17:00</td>
+          <td>
+            <div class="schedule-event">Panel Discussion</div>
+            <div class="schedule-desc">From Data to Decisions</div>
+          </td>
+          <td>Real-world deployment of multimodal time series systems.</td>
+        </tr>
+        <tr>
+          <td>17:00</td>
+          <td>
+            <div class="schedule-event">Closing Remarks</div>
+          </td>
+          <td>Summary, takeaways, and post-workshop artifacts.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ORGANIZERS -->
+<section id="organizers">
+  <div class="container-wide">
+    <p class="section-label">Organizing Team</p>
+    <h2>Organizers</h2>
+    <div class="rule"></div>
+    <div class="organizers-grid">
+
+      <div class="org-card">
+        <p class="org-name">Sai Shankar Narasimhan</p>
+        <p class="org-affiliation">PhD Candidate · The University of Texas at Austin</p>
+        <p class="org-bio">Works on time series generative and forecasting models; published at NeurIPS and ICML. Research focuses on diffusion-based multimodal time series modeling and context-aware forecasting.</p>
+      </div>
+
+      <div class="org-card">
+        <p class="org-name">Defu Cao</p>
+        <p class="org-affiliation">PhD Candidate / Visiting Scholar · USC / Caltech</p>
+        <p class="org-bio">Research on robust, interpretable ML for dynamic data with emphasis on time series foundation models. Published at NeurIPS, ICML, and ICLR. Has organized workshops at NeurIPS and ICDM.</p>
+      </div>
+
+      <div class="org-card">
+        <p class="org-name">Sandeep Chinchali</p>
+        <p class="org-affiliation">Assistant Professor · The University of Texas at Austin</p>
+        <p class="org-bio">Leads research on multimodal time series foundation models, structured retrieval, and evaluations for neuro-symbolic reasoning. PhD from Stanford. NSF and Stanford Graduate Fellow.</p>
+      </div>
+
+      <div class="org-card">
+        <p class="org-name">Yan Liu</p>
+        <p class="org-affiliation">Professor · University of Southern California</p>
+        <p class="org-bio">IEEE/AAAI Fellow. Director of the USC Machine Learning Center. Research spans time series, interpretable AI, and physics-informed AI. NSF CAREER Award recipient; has organized ICLR, KDD, ICML, and NeurIPS workshops.</p>
+      </div>
+
+      <div class="org-card">
+        <p class="org-name">Ameet Talwalkar</p>
+        <p class="org-affiliation">Associate Professor · Carnegie Mellon University &amp; Chief Scientist, Datadog</p>
+        <p class="org-bio">Research on ML systems, scalable foundation models, and automated ML. Co-founded Determined AI, led initial development of Apache Spark MLlib, co-authored <em>Foundations of Machine Learning</em>.</p>
+      </div>
+
+      <div class="org-card">
+        <p class="org-name">Qingsong Wen</p>
+        <p class="org-affiliation">Chief Scientist · Squirrel Ai Learning</p>
+        <p class="org-bio">Chair of the IEEE Task Force on AI for Time Series. PhD from Georgia Tech. Has led numerous AI4TS workshops at KDD, AAAI, IJCAI, ICDM, and SDM. Also PhD Supervisor at University of Oxford.</p>
+      </div>
+
+      <div class="org-card">
+        <p class="org-name">Gerald Woo</p>
+        <p class="org-affiliation">Senior Research Scientist · Datadog AI Research</p>
+        <p class="org-bio">Works on time series foundation models, deep learning, and production ML systems. PhD from Singapore Management University. Previously held research roles at Meta and Salesforce AI Research.</p>
+      </div>
+
+      <div class="org-card">
+        <p class="org-name">Chenghao Liu</p>
+        <p class="org-affiliation">Staff Research Scientist · Datadog AI Research</p>
+        <p class="org-bio">Works on time series foundation models, LLMs, and agentic AI for observability. Organizer of the ICLR 2026 Workshop on Time Series in the Age of Large Models.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>Temporal Foundation Agents Workshop &nbsp;·&nbsp; NeurIPS 2026</p>
+  <p style="margin-top:0.4rem;">Contact: <a href="mailto:sai@synthefy.com">sai@synthefy.com</a></p>
+</footer>
+
+</body>
+</html>
